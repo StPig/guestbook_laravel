@@ -1,0 +1,14 @@
+#container {
+  position: absolute;
+  height: 260px;
+  width: 39%;
+  top: 20%;
+  left: 28%;
+  border: 2px solid #6D3232;
+  border-radius: 5px;
+}
+
+#signup {
+  left: 320px;
+  top: -36px;
+}

@@ -1,0 +1,9 @@
+#container {
+  position: absolute;
+  height: 550px;
+  width: 39%;
+  top: 20%;
+  left: 28%;
+  border: 2px solid #6D3232;
+  border-radius: 5px;
+}

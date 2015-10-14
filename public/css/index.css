@@ -1,0 +1,18 @@
+#container {
+  position: relative;
+  height: 300px;
+  width: 700px;
+  top: 20px;
+  border: 2px solid #6D3232;
+  border-radius: 5px;
+}
+
+#username {
+  font-size: 20px;
+}
+
+#message {
+  width: 700px;
+  border: 2px solid #6D3232;
+  border-radius: 5px;
+}
