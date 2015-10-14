@@ -38,7 +38,7 @@ class PortalController extends Controller
       // get login account
       $portalaccount = $ncuPortal->getLoginAccount();
       $request->session()->put('portalaccount', $portalaccount);
-      return redirect('hw1');
+      return redirect(route('hw1'));
     }
     else
     {
@@ -51,7 +51,7 @@ class PortalController extends Controller
     $request->session()->forget('portalaccount');
     $request->session()->forget('m');
     $request->session()->forget('n');
-    return redirect('hw1');
+    return redirect(route('hw1'));
   }
 
   public function portallogout(Request $request)

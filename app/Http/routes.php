@@ -25,7 +25,11 @@ Route::get('/signup', ['as' => 'signup', 'uses' => 'MainController@signup']);
 
 Route::post('/signup/todb', ['as' => 'signup.todb', 'uses' => 'MainController@signuptoDB']);
 
-//------------portal-------------------------------------------------------
+//-----------------------------message--------------------------------------
+
+Route::resource('message', 'MessageController', ['names' => ['store' => 'message.post']]);
+
+//----------------------------portal----------------------------------------
 
 Route::get('/login/portal', ['as' => 'login.portal', 'uses' => 'PortalController@loginportal']);
 

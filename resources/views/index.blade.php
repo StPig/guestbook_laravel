@@ -5,7 +5,7 @@
 
 @section('list')
 @if(Auth::check())
-<li>{{$user->account}}</li>
+<li id="username">{{$user->username}}</li>
 <li><a href="{{route('logout')}}">Logout</a></li>
 @else
 <li><a href="{{route('login')}}">Login</a></li>
@@ -14,15 +14,19 @@
 
 @section('container')
 <div id="container" class="row">
-  <form class="col s12" action="newpost_toDB.php" method="POST">
+  <form class="col s12" action="{{route('message.post')}}" method="POST">
     <div class="row">
       <div class="input-field col s8">
         <input id="title" type="text" class="validate" name="title">
         <label for="title">Title</label>
       </div>
       <div class="input-field col s4">
-        <input id="username" value="<?php if(isset($_SESSION['username'])){echo $_SESSION['username'];}else{} ?>" type="text" class="validate" name="username">
-        <label for="username" claa="active">Username</label>
+        @if(Auth::check())
+          <input id="name" value="{{$user->username}}" type="text" class="validate" name="name">
+        @else
+          <input id="name" value="" type="text" class="validate" name="name">
+        @endif
+        <label for="name" claa="active">Name</label>
       </div>
     </div>
     <div class="row">
@@ -31,9 +35,29 @@
         <label for="content">Content</label>
       </div>
     </div>
+    <input type="hidden" name="poster" value="{{$user->username}}">
+    <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <button class="btn waves-effect waves-light col s3 offset-s9" type="submit" name="action">Submit
 	     <i class="material-icons right">send</i>
 	  </button>
   </form>
+</div>
+<div id="message">
+  @foreach($messages as $message)
+  <div class="row">
+    <div class="col s8">
+      Title:{{$message->title}}
+    </div>
+    <div class="col s4">
+      Name:{{$message->name}}
+    </div>
+    <div class="col s12">
+      Content:{{$message->content}}
+    </div>
+    <span>
+      ------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+    </span>
+  </div>
+  @endforeach
 </div>
 @endsection

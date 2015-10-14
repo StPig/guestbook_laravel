@@ -8,9 +8,9 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Http\Request;
 use Auth;
-use DB;
 use Hash;
-use Carbon\Carbon;
+use App\User;
+use App\Message;
 
 class MainController extends Controller
 {
@@ -22,7 +22,8 @@ class MainController extends Controller
   public function index()
   {
     $user = Auth::user();
-    return View('index');
+    $messages = Message::all();
+    return View('index', ['user' => $user, 'messages' => $messages]);
   }
 
   public function hw1(Request $request)
@@ -41,31 +42,35 @@ class MainController extends Controller
   public function logincheck(Request $request)
   {
     $input = $request->all();
-    $users = DB::select('select * from users where account = ?', [$input['account']]);
-    if($users != null)
+    $user = User::where('account', '=', $input['account'])->first();
+    if($user != null)
     {
-      //$pw = Hash::make($input['password']);
-      $pw = md5($input['password']);
-      if($pw == $users[0]->password)
+      if(Hash::needsRehash($user->password))
       {
-        Auth::login($users[0]->password);
-        return redirect('index');
+        $pw = Hash::make($user->password);
+        $user->password = $pw;
+        $user->save();
+      }
+      if(Hash::check($input['password'], $user->password))
+      {
+        Auth::login($user);
+        return redirect(route('index'));
       }
       else
       {
-        return redirect('login');
+        return redirect(route('login'));
       }
     }
     else
     {
-      return redirect('login');
+      return redirect(route('login'));
     }
   }
 
   public function logout()
   {
     Auth::logout();
-    return redirect('index');
+    return redirect(route('index'));
   }
 
   public function signup()
@@ -76,25 +81,28 @@ class MainController extends Controller
   public function signuptoDB(Request $request)
   {
     $input = $request->all();
-    $user = DB::select('select * from users where account = ?', [$input['account']]);
+    $user = User::where('account', '=', $input['account'])->first();
     if($user == null)
     {
       if($input['password'] == $input['checkpassword'])
       {
-        //$pw = Hash::make($input['password']);
-        $pw = md5($input['password']);
-        $time = Carbon::now();
-        DB::insert('insert into users (account, password, username, email, created_at) values (?, ?, ?, ?, ?)', [$input['account'], $pw, $input['username'], $input['email'], $time]);
-        return redirect('index');
+        $pw = Hash::make($input['password']);
+        $user = new User;
+        $user->account = $input['account'];
+        $user->password = $pw;
+        $user->username = $input['username'];
+        $user->email = $input['email'];
+        $user->save();
+        return redirect(route('index'));
       }
       else
       {
-        return redirect('signup');
+        return redirect(route('signup'));
       }
     }
     else
     {
-      return redirect('signup');
+      return redirect(route('signup'));
     }
   }
 
@@ -105,6 +113,6 @@ class MainController extends Controller
     $n = $input['n'];
     $request->session()->put('m', $m);
     $request->session()->put('n', $n);
-    return redirect('hw1');
+    return redirect(route('hw1'));
   }
 }
